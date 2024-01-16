@@ -22,7 +22,12 @@ function gameboard() {
        console.log(boardValues);
    };
 
-   return {getBoard, play, printBoard};
+   const Value = (row, column) => {
+       return board[row][column].getValue();
+      
+   };
+
+   return {getBoard, play, printBoard, Value};
 
 
 }
@@ -59,21 +64,28 @@ function gameControl(player1 = "Yassin", player2 = "Hamza") {
     
     const playRound = (column, row) => {
         console.log(` ${getActivePlayer().name} put ${getActivePlayer().choice} on column ${column} and on row ${row} `)
-        board.play(column, row, getActivePlayer().name)
+        board.play(column, row, getActivePlayer().choice)
     
-        const res = new Set(board[row]).size === 1;
-
-        if( (board[0][column] === board[1][column] && board[1][column] === board[2][column]) || (board[0][0]===board[1][1] && board[1][1] === board[2][2])) {
-            re = true;
+        let res = false;
+        let re = false;
+        if((board.Value(row, 0) !== 0) && (board.Value(row, 0) === board.Value(row, 1)) && (board.Value(row, 1) === board.Value(row, 2))) {
+             res = true;
+             console.log(board.Value(row, 0), board.Value(row, 1), board.Value(row, 2));
         }
+
+        if( (board.Value(0,column) !== 0) && (board.Value(0, column) === board.Value(1, column) && board.Value(1, column) === board.Value(2, column)) || (board.Value(0, 0)===board.Value(1, 1) && board.Value(1, 1) === board.Value(2, 2) && board.Value(0, 0) != 0)) {
+             re = true;
+        }
+
+        console.log(res, re);
 
 
         if(res || re) {
-            console.log(`${getActivePlayer().name} won the game`)
-            location.reload();
+            console.log(`${getActivePlayer().name} won the game`);
+            board.printBoard();
+            throw new Error("GAME OVER");
         }
-    
-         
+               
         switchPlayerTurn();
         printNewRound();
     };
@@ -81,6 +93,20 @@ function gameControl(player1 = "Yassin", player2 = "Hamza") {
     return{playRound, getActivePlayer};
 }
 
+
 const game = gameControl();
 
-game.playRound(1, 1);
+for(let i = 0; i < 9; i++) {
+
+    // Using prompt to get user input for the first number
+    const firstNumberInput = prompt("Enter row:");
+    const row = parseFloat(firstNumberInput);
+
+    // Using prompt to get user input for the second number
+    const secondNumberInput = prompt("Enter column:");
+    const column = parseFloat(secondNumberInput);
+
+    game.playRound(row, column);
+
+}
+
