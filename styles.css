@@ -35,3 +35,26 @@ body {
     background: lightyellow;
     cursor: pointer;
   }
+
+  .result {
+    font-size: 64px;
+    color: crimson;
+    align-self: center;
+  }
+
+  .btn {
+    color: blue;
+    border-radius: 25px;
+    align-self: center;
+    padding: 10px;
+    font-size: 36px;
+    background-color: bisque;
+  }
+
+  .btnn {
+    align-self: center;
+  }
+
+  .winningCell {
+    color: green;
+  }
