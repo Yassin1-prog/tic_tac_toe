@@ -1,176 +1,207 @@
-function gameboard() {
-   const board = [];
+class GameBoard {
+    constructor() {
+        this.board = [];
 
-   let rows = 3;
-   let columns = 3;
+        this.rows = 3;
+        this.columns = 3;
 
-   for(let i = 0; i < rows; i++) {
-      board[i] = [];
-      for(let j = 0; j < columns; j++) {
-          board[i].push(Cell());
-      }
-   }
-      
-   const getBoard = () => board;
-    
-   const play = (column, row, player) => {
-        board[row][column].addChoice(player);
-   };
-
-   const printBoard = () => {
-       const boardValues = board.map((row) => row.map((cell) => cell.getValue()));
-       console.log(boardValues);
-   };
-
-   const Value = (row, column) => {
-       return board[row][column].getValue();
-      
-   };
-
-   return {getBoard, play, printBoard, Value};
-
-
-}
-
-function Cell() {
-    let value = 0;
-
-    const addChoice = (player) => {
-        value = player;
-    };
-
-    const getValue = () => value;
-
-    return {addChoice, getValue};
-
-}
-
-function gameControl(player1 = "Player 1", player2 = "Player 2") {
-    const board = gameboard();
-    const players = [{name: player1, choice: 'x'}, {name: player2, choice:'o'}];
-
-    let horizontalWin = false;
-    let verticalWin = false;
-    let diagonalWin = false;
-    let diagonalWin1 = false;
-    let full = false;
-
-    let activePlayer = players[0];
-    let played = players[1];
-
-    const switchPlayerTurn = () => {
-        activePlayer = activePlayer === players[0] ? players[1] : players[0];
-      };
-
-    const whoPlayed = () => {
-        played = played === players[1] ? players[0] : players[1];
+        for (let i = 0; i < this.rows; i++) {
+            this.board[i] = [];
+            for (let j = 0; j < this.columns; j++) {
+                this.board[i].push(new Cell());
+            }
+        }
     }
 
-    const getActivePlayer = () => activePlayer;
+    getBoard() {
+        return this.board;
+    }
 
-    const getWhoPlayed = () => played;
+    play(column, row, player) {
+        this.board[row][column].addChoice(player);
+    }
 
-    const printNewRound = () => {
-        board.printBoard();
-        console.log(`${getActivePlayer().name}'s turn.`);
-    };
-    
-    const playRound = (column, row) => {
-        if( board.Value(row, column) !== 0 ) {
+    value(row, column) {
+        return this.board[row][column].getValue();
+    }
+}
+
+
+
+
+class Cell {
+    constructor() {
+        this.value = 0;
+    }
+
+    addChoice(player) {
+        this.value = player;
+    }
+
+    getValue() {
+        return this.value;
+    }
+}
+
+class GameControl {
+    constructor(player1 = "Player 1", player2 = "Player 2") {
+        this.board = new GameBoard();
+        this.players = [{ name: player1, choice: 'x' }, { name: player2, choice: 'o' }];
+
+        this.horizontalWin = false;
+        this.verticalWin = false;
+        this.diagonalWin = false;
+        this.diagonalWin1 = false;
+        this.full = false;
+
+        this.activePlayer = this.players[0];
+        this.played = this.players[1];
+    }
+
+    switchPlayerTurn() {
+        this.activePlayer = this.activePlayer === this.players[0] ? this.players[1] : this.players[0];
+    }
+
+    whoPlayed() {
+        this.played = this.played === this.players[1] ? this.players[0] : this.players[1];
+    }
+
+    getActivePlayer() {
+        return this.activePlayer;
+    }
+
+    getWhoPlayed() {
+        return this.played;
+    }
+
+    playRound(column, row) {
+        if (this.board.value(row, column) !== 0) {
             return;
         }
-        console.log(` ${getActivePlayer().name} put ${getActivePlayer().choice} on column ${column} and on row ${row} `)
-        board.play(column, row, getActivePlayer().choice);
-    
-        if((board.Value(row, 0) !== 0) && (board.Value(row, 0) === board.Value(row, 1)) && (board.Value(row, 1) === board.Value(row, 2))) {
-             horizontalWin = true;
-            // console.log(board.Value(row, 0), board.Value(row, 1), board.Value(row, 2));
+
+        console.log(` ${this.getActivePlayer().name} put ${this.getActivePlayer().choice} on column ${column} and on row ${row} `);
+
+        this.board.play(column, row, this.getActivePlayer().choice);
+
+        if (
+            this.board.value(row, 0) !== 0 &&
+            this.board.value(row, 0) === this.board.value(row, 1) &&
+            this.board.value(row, 1) === this.board.value(row, 2)
+        ) {
+            this.horizontalWin = true;
         }
 
-        if( (board.Value(0,column) !== 0) && (board.Value(0, column) === board.Value(1, column) && board.Value(1, column) === board.Value(2, column))) {
-             verticalWin = true;
+        if (
+            this.board.value(0, column) !== 0 &&
+            this.board.value(0, column) === this.board.value(1, column) &&
+            this.board.value(1, column) === this.board.value(2, column)
+        ) {
+            this.verticalWin = true;
         }
 
-        if((board.Value(0, 0)===board.Value(1, 1) && board.Value(1, 1) === board.Value(2, 2) && board.Value(0, 0) != 0)) {
-            diagonalWin = true;
+        if (
+            this.board.value(0, 0) === this.board.value(1, 1) &&
+            this.board.value(1, 1) === this.board.value(2, 2) &&
+            this.board.value(0, 0) !== 0
+        ) {
+            this.diagonalWin = true;
         }
 
-        if((board.Value(0, 2)===board.Value(1, 1) && board.Value(1, 1) === board.Value(2, 0) && board.Value(1, 1) !== 0)) {
-            diagonalWin1 = true;
+        if (
+            this.board.value(0, 2) === this.board.value(1, 1) &&
+            this.board.value(1, 1) === this.board.value(2, 0) &&
+            this.board.value(1, 1) !== 0
+        ) {
+            this.diagonalWin1 = true;
         }
 
         let cnt = 0;
-        for(let i = 0; i < 3; i++) {
-            for(let j = 0; j < 3; j++) {
-                if(board.Value(i, j) !== 0) {
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (this.board.value(i, j) !== 0) {
                     cnt++;
                 }
             }
         }
 
-        if(cnt === 9) {
-            full = true;
+        if (cnt === 9) {
+            this.full = true;
         }
 
-       /* if (full && !re && !res) {
-            console.log("Game over, its a draw")
-        }
+        this.switchPlayerTurn();
+        this.whoPlayed();
+    }
 
+    getDiagonalWin() {
+        return this.diagonalWin;
+    }
 
-        if(res || re) {
-            console.log(`${getActivePlayer().name} won the game`);
-            //board.printBoard();
-        }*/
-               
-        switchPlayerTurn();
-        whoPlayed();
-        //printNewRound();
-    };
+    getDiagonalWin1() {
+        return this.diagonalWin1;
+    }
 
-    const getDiagonalWin = () => diagonalWin;
-    const getDiagonalWin1 = () => diagonalWin1;
-    const getHorizontalWin = () => horizontalWin;
-    const geVerticalWin = () => verticalWin;
-    const getFull = () => full;
+    getHorizontalWin() {
+        return this.horizontalWin;
+    }
 
+    getVerticalWin() {
+        return this.verticalWin;
+    }
 
-    return{playRound, getActivePlayer, getBoard: board.getBoard, getDiagonalWin, getHorizontalWin, geVerticalWin, getFull, getWhoPlayed, getDiagonalWin1};
+    getFull() {
+        return this.full;
+    }
+
+    getBoard() {
+        return this.board.getBoard();
+    }
 }
 
 
-function screenController() {
-    let winningRow = 5, winningCol = 5;
+class ScreenController {
+    constructor() {
+        this.winningRow = 5;
+        this.winningCol = 5;
 
-    const game = gameControl();
-    const playerTurnDiv = document.querySelector('.turn');
-    const boardDiv = document.querySelector('.board');
-    const result = document.querySelector('.result');
-    const btn = document.querySelector('.btnn');
+        this.game = new GameControl();
+        this.playerTurnDiv = document.querySelector('.turn');
+        this.boardDiv = document.querySelector('.board');
+        this.result = document.querySelector('.result');
+        this.btn = document.querySelector('.btnn');
 
-    const reset = document.createElement('button');
-    reset.classList.add("btn");
-    reset.textContent = "Reset";
+        this.reset = document.createElement('button');
+        this.reset.classList.add("btn");
+        this.reset.textContent = "Reset";
 
-    const updateScreen = () => {
-        boardDiv.textContent = "";
+        this.boardDiv.addEventListener("click", this.clickHandlerBoard.bind(this));
 
-        const board = game.getBoard();
-        const activePlayer = game.getActivePlayer();
-        const whoPlayed = game.getWhoPlayed();
+        this.reset.addEventListener("click", () => {
+            window.location.reload();
+        });
 
-        playerTurnDiv.textContent = `${activePlayer.name}'s turn...`;
+        this.updateScreen();
+    }
 
-        if(game.getFull()) {
-            result.textContent = "Its a Tie";
-            btn.appendChild(reset);
-            boardDiv.removeEventListener("click", clickHandlerBoard);
-            playerTurnDiv.textContent = ``;
+    updateScreen() {
+        this.boardDiv.textContent = "";
+
+        const board = this.game.getBoard();
+        const activePlayer = this.game.getActivePlayer();
+        const whoPlayed = this.game.getWhoPlayed();
+
+        this.playerTurnDiv.textContent = `${activePlayer.name}'s turn...`;
+
+        if (this.game.getFull()) {
+            this.result.textContent = "It's a Tie";
+            this.btn.appendChild(this.reset);
+            this.boardDiv.removeEventListener("click", this.clickHandlerBoard);
+            this.playerTurnDiv.textContent = ``;
         }
-        if(game.getDiagonalWin() || game.geVerticalWin() || game.getHorizontalWin() || game.getDiagonalWin1()) {
-            result.textContent = `${whoPlayed.name} won the game`;
-            btn.appendChild(reset);
-            boardDiv.removeEventListener("click", clickHandlerBoard);
-            playerTurnDiv.textContent = ``;
+        if (this.game.getDiagonalWin() || this.game.getVerticalWin() || this.game.getHorizontalWin() || this.game.getDiagonalWin1()) {
+            this.result.textContent = `${whoPlayed.name} won the game`;
+            this.btn.appendChild(this.reset);
+            this.boardDiv.removeEventListener("click", this.clickHandlerBoard);
+            this.playerTurnDiv.textContent = ``;
         }
 
         board.forEach((row, indexRow) => {
@@ -178,7 +209,12 @@ function screenController() {
                 const cellButton = document.createElement("button");
                 cellButton.classList.add("cell");
 
-                if((indexRow == winningRow) || (indexCol == winningCol) || (indexRow==indexCol && game.getDiagonalWin()) || ((Math.abs(indexCol-indexRow)==2 || (indexCol == 1 && indexRow == 1))  && game.getDiagonalWin1())) {
+                if (
+                    (indexRow == this.winningRow) ||
+                    (indexCol == this.winningCol) ||
+                    (indexRow == indexCol && this.game.getDiagonalWin()) ||
+                    ((Math.abs(indexCol - indexRow) == 2 || (indexCol == 1 && indexRow == 1)) && this.game.getDiagonalWin1())
+                ) {
                     cellButton.classList.add("winningCell");
                     console.log("it worked");
                 }
@@ -186,38 +222,28 @@ function screenController() {
                 cellButton.dataset.column = indexCol;
                 cellButton.dataset.row = indexRow;
                 cellButton.textContent = cell.getValue() === 0 ? "" : cell.getValue();
-                boardDiv.appendChild(cellButton);
-            })
-        })
+                this.boardDiv.appendChild(cellButton);
+            });
+        });
     }
 
-    function clickHandlerBoard(e) {
+    clickHandlerBoard(e) {
         const selectedRow = e.target.dataset.row;
         const selectedCol = e.target.dataset.column;
 
-        if(!selectedCol || !selectedRow) return;
+        if (!selectedCol || !selectedRow) return;
 
-        game.playRound(selectedCol, selectedRow);
+        this.game.playRound(selectedCol, selectedRow);
 
-        if(game.getHorizontalWin()) {
-            winningRow = selectedRow;
+        if (this.game.getHorizontalWin()) {
+            this.winningRow = selectedRow;
         }
-        if(game.geVerticalWin()) {
-            winningCol = selectedCol;
+        if (this.game.getVerticalWin()) {
+            this.winningCol = selectedCol;
         }
 
-        //console.log(winningRow, winningCol);
-
-        updateScreen();
+        this.updateScreen();
     }
-
-    boardDiv.addEventListener("click", clickHandlerBoard);
-
-    reset.addEventListener("click", () => {
-        window.location.reload();
-    });
-
-    updateScreen();
 }
 
-screenController();
+const screenController = new ScreenController();
