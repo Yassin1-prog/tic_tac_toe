@@ -1,60 +1,128 @@
 h1 {
-    text-align: center;
-    color: blueviolet;
+  text-align: center;
+  color: blueviolet;
+  font-family: "Kode Mono", monospace;
+  font-weight: 800;
+}
+
+body > h1 {
+  font-size: 48px;
 }
 
 body {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #082f49;
 }
 
 .container {
-    align-self: center;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .board {
-    display: grid;
-    height: 400px;
-    width: 400px;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    border: 1px solid black;
-    gap: 2px;
-    padding: 2px;
-    background-color: yellow;
+  display: grid;
+  height: 400px;
+  width: 400px;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  border: 1px solid black;
+  gap: 2px;
+  padding: 2px;
+  background-color: #a3e635;
+}
+
+.cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  /*font-size: 2rem;*/
+  font-size: 48px;
+  border: 1px solid #a3e635;
+  background-color: lightyellow;
+  cursor: pointer;
+}
+
+.cell:hover {
+  opacity: 0.8;
+}
+
+.result {
+  font-size: 64px;
+  color: crimson;
+  align-self: center;
+  font-family: "Kode Mono", monospace;
+}
+
+.show {
+  animation-duration: 2s;
+  animation-name: bye;
+}
+
+@keyframes bye {
+  from {
+    transform: translateX(-100%);
   }
-  
+  to {
+    transform: translateX(0);
+  }
+}
+
+.btn {
+  color: blue;
+  border-radius: 25px;
+  align-self: center;
+  padding: 10px 25px;
+  font-size: 36px;
+  font-family: "Kode Mono", monospace;
+  background-color: bisque;
+  animation-duration: 2s;
+  animation-name: hi;
+}
+
+@keyframes hi {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.btn:hover {
+  opacity: 0.6;
+  font-size: 42px;
+}
+
+.btnn {
+  align-self: center;
+}
+
+.winningCell {
+  color: green;
+}
+
+@media (max-width: 400px) {
+  .board {
+    height: 200px;
+    width: 200px;
+  }
+
   .cell {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    /*font-size: 2rem;*/
-    font-size: 48px;
-    border: 1px solid grey;
-    background: lightyellow;
-    cursor: pointer;
+    font-size: 24px;
   }
 
   .result {
-    font-size: 64px;
-    color: crimson;
-    align-self: center;
+    font-size: 24px;
   }
 
   .btn {
-    color: blue;
-    border-radius: 25px;
-    align-self: center;
-    padding: 10px;
-    font-size: 36px;
-    background-color: bisque;
+    padding: 5px 15px;
+    font-size: 15px;
   }
-
-  .btnn {
-    align-self: center;
-  }
-
-  .winningCell {
-    color: green;
-  }
+}
